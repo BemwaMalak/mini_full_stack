@@ -1,37 +1,44 @@
-# server
+# Project-wide
+###############################################
+node_modules
+.venv
+.DS_Store
+
+# Editor directories and files
+.vscode/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Server
 ###############################################
 
-### OSX ###
+### macOS ###
 apps/server/.DS_Store
 apps/server/.AppleDouble
 apps/server/.LSOverride
-
-# Icon must end with two \r
 apps/server/Icon
-
-
-# Thumbnails
 apps/server/._*
-
-# Files that might appear on external disk
 apps/server/.Spotlight-V100
 apps/server/.Trashes
-
-# Directories potentially created on remote AFP share
 apps/server/.AppleDB
 apps/server/.AppleDesktop
 apps/server/Network Trash Folder
 apps/server/Temporary Items
 apps/server/.apdisk
 
-
 ### Python ###
 # Byte-compiled / optimized / DLL files
+apps/server/**/*.py[cod]
+apps/server/**/*.so
 apps/server/__pycache__/
-apps/server/*.py[cod]
+apps/server/**/__pycache__/
 
-# C extensions
-apps/server/*.so
 
 # Distribution / packaging
 apps/server/.Python
@@ -51,8 +58,6 @@ apps/server/.installed.cfg
 apps/server/*.egg
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 apps/server/*.manifest
 apps/server/*.spec
 
@@ -78,21 +83,18 @@ apps/server/docs/_build/
 # PyBuilder
 apps/server/target/
 
-
 ### Django ###
 apps/server/*.log
 apps/server/*.pot
 apps/server/*.pyc
-apps/server/__pycache__/
 apps/server/local_settings.py
-
 apps/server/.env
 apps/server/db.sqlite3
 
-# client
+# Client
 ###############################################
 # Logs
-apps/client/logs
+apps/client/logs/
 apps/client/*.log
 apps/client/npm-debug.log*
 apps/client/yarn-debug.log*
@@ -100,27 +102,8 @@ apps/client/yarn-error.log*
 apps/client/pnpm-debug.log*
 apps/client/lerna-debug.log*
 
-apps/client/node_modules
-apps/client/dist
-apps/client/dist-ssr
+# Build and dependencies
+apps/client/node_modules/
+apps/client/dist/
+apps/client/dist-ssr/
 apps/client/*.local
-
-
-
-
-
-# Project-wide
-###############################################
-node_modules
-
-# Editor directories and files
-.venv
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
