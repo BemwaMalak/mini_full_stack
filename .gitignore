@@ -1,0 +1,126 @@
+# server
+###############################################
+
+### OSX ###
+apps/server/.DS_Store
+apps/server/.AppleDouble
+apps/server/.LSOverride
+
+# Icon must end with two \r
+apps/server/Icon
+
+
+# Thumbnails
+apps/server/._*
+
+# Files that might appear on external disk
+apps/server/.Spotlight-V100
+apps/server/.Trashes
+
+# Directories potentially created on remote AFP share
+apps/server/.AppleDB
+apps/server/.AppleDesktop
+apps/server/Network Trash Folder
+apps/server/Temporary Items
+apps/server/.apdisk
+
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+apps/server/__pycache__/
+apps/server/*.py[cod]
+
+# C extensions
+apps/server/*.so
+
+# Distribution / packaging
+apps/server/.Python
+apps/server/env/
+apps/server/build/
+apps/server/develop-eggs/
+apps/server/dist/
+apps/server/downloads/
+apps/server/eggs/
+apps/server/lib/
+apps/server/lib64/
+apps/server/parts/
+apps/server/sdist/
+apps/server/var/
+apps/server/*.egg-info/
+apps/server/.installed.cfg
+apps/server/*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+apps/server/*.manifest
+apps/server/*.spec
+
+# Installer logs
+apps/server/pip-log.txt
+apps/server/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+apps/server/htmlcov/
+apps/server/.tox/
+apps/server/.coverage
+apps/server/.cache
+apps/server/nosetests.xml
+apps/server/coverage.xml
+
+# Translations
+apps/server/*.mo
+apps/server/*.pot
+
+# Sphinx documentation
+apps/server/docs/_build/
+
+# PyBuilder
+apps/server/target/
+
+
+### Django ###
+apps/server/*.log
+apps/server/*.pot
+apps/server/*.pyc
+apps/server/__pycache__/
+apps/server/local_settings.py
+
+apps/server/.env
+apps/server/db.sqlite3
+
+# client
+###############################################
+# Logs
+apps/client/logs
+apps/client/*.log
+apps/client/npm-debug.log*
+apps/client/yarn-debug.log*
+apps/client/yarn-error.log*
+apps/client/pnpm-debug.log*
+apps/client/lerna-debug.log*
+
+apps/client/node_modules
+apps/client/dist
+apps/client/dist-ssr
+apps/client/*.local
+
+
+
+
+
+# Project-wide
+###############################################
+node_modules
+
+# Editor directories and files
+.venv
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
