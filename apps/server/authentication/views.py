@@ -144,6 +144,7 @@ class RegisterApiView(APIView):
             status_code=HTTP_400_BAD_REQUEST,
         )
 
+
 class UserInfoApiView(APIView):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -159,4 +160,3 @@ class UserInfoApiView(APIView):
             data=user_data,
             status_code=HTTP_200_OK,
         )
- 

@@ -22,11 +22,11 @@ class MedicationSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "added_by", "created_at", "updated_at"]
 
     def get_image(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.image:
             return request.build_absolute_uri(obj.image.url)
         return None
-    
+
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["added_by"] = user
@@ -34,7 +34,6 @@ class MedicationSerializer(serializers.ModelSerializer):
 
 
 class RefillRequestSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.username")
     medication = serializers.PrimaryKeyRelatedField(queryset=Medication.objects.all())
 
     class Meta:
@@ -48,7 +47,12 @@ class RefillRequestSerializer(serializers.ModelSerializer):
             "requested_at",
             "updated_at",
         ]
-        read_only_fields = ["status", "requested_at", "updated_at"]
+        read_only_fields = ["id", "user", "status", "requested_at", "updated_at"]
+
+        def create(self, validated_data):
+            user = self.context["request"].user
+            validated_data["user"] = user
+            return super().create(validated_data)
 
 
 class RefillRequestDetailSerializer(serializers.ModelSerializer):
