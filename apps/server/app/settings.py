@@ -15,9 +15,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
+
+RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "False") == "True"
 
 # Application definition
 ###############################################
@@ -65,15 +68,17 @@ DATABASES = {
     },
 }
 
+# Use test database configuration when running tests
 if "test" in sys.argv or "test_coverage" in sys.argv:
     DATABASES["default"] = DATABASES["test"]
 
 # Authentication settings
 ###############################################
+AUTH_USER_MODEL = "authentication.User"
 AUTHENTICATION_BACKENDS = [
-    "authentication.backend.AuthBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"

@@ -3,6 +3,20 @@ from django.contrib.auth.models import Group, Permission, PermissionsMixin
 from django.db import models
 
 
+class UserManager(BaseUserManager):
+    def create_user(self, username, password=None, **extra_fields):
+        """
+        Creates and saves a User with the given username and password.
+        """
+        if not username:
+            raise ValueError("The Username must be set")
+
+        user = self.model(username=username, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     class Role(models.TextChoices):
         USER = "USER", "User"
@@ -12,10 +26,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=5, choices=Role.choices)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    failed_login_attempts = models.IntegerField(default=0)
+    is_locked = models.BooleanField(default=False)
 
     USERNAME_FIELD = "username"
 
-    objects = BaseUserManager()
+    objects = UserManager()
 
     groups = models.ManyToManyField(
         Group,
