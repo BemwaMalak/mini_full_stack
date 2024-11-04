@@ -14,4 +14,5 @@ export const RESPONSE_MESSAGES: Record<string, string> = {
   E008: 'Medication not found.',
   S005: 'Medications loaded successfully.',
   S006: 'Medication details loaded successfully.',
+  S007: 'User information retrieved successfully.',
 };

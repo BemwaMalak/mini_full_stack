@@ -24,15 +24,6 @@ const MedicationItem: React.FC<MedicationItemProps> = ({ medication }) => {
       <p className={styles.medicationInstructions}>
         Instructions: {medication.instructions}
       </p>
-      <p className={styles.medicationAddedBy}>
-        Added by: {medication.added_by}
-      </p>
-      <p className={styles.medicationDates}>
-        Created at: {new Date(medication.created_at).toLocaleString()}
-      </p>
-      <p className={styles.medicationDates}>
-        Updated at: {new Date(medication.updated_at).toLocaleString()}
-      </p>
     </div>
   );
 };

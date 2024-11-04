@@ -1,14 +1,14 @@
-// src/pages/Home/Home.tsx
-
 import React, { useState } from 'react';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import MedicationList from '../../components/MedicationList/MedicationList';
-import { useMedications } from '../../hooks/useMedications';
+import { useMedications } from '../../hooks/useMedication';
 import styles from './Home.module.scss';
 import { CreateMedicationPayload } from '../../services/medicationService';
+import Spinner from '../../components/Spinner/Spinner';
 
 const Home: React.FC = () => {
-  const { medications, loading, error, addMedication, reload } = useMedications();
+  const { medications, loading, error, addMedication, reload } =
+    useMedications();
   const [newMedication, setNewMedication] = useState<CreateMedicationPayload>({
     name: '',
     dosage: '',
@@ -18,13 +18,21 @@ const Home: React.FC = () => {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value, files } = e.target;
-    setNewMedication((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    const { name, value, type, files } = e.target as HTMLInputElement;
+
+    if (type === 'file') {
+      setNewMedication((prev) => ({
+        ...prev,
+        [name]: files && files.length > 0 ? files[0] : null,
+      }));
+    } else {
+      setNewMedication((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,7 +45,7 @@ const Home: React.FC = () => {
       instructions: '',
       image: null,
     });
-    await reload(); // Refresh the medications list after adding a new one
+    await reload();
   };
 
   return (
@@ -45,7 +53,7 @@ const Home: React.FC = () => {
       <NavigationBar />
       <div className={styles.homeContainer}>
         <h1 className={styles.title}>Current Medications</h1>
-        {loading && <p className={styles.loading}>Loading medications...</p>}
+        {loading && <Spinner loading={loading} />}
         {error && <p className={styles.error}>{error}</p>}
         {!loading && !error && <MedicationList medications={medications} />}
 

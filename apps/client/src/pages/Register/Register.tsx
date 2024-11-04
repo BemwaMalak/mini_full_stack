@@ -103,9 +103,6 @@ const Register = (): React.JSX.Element => {
             </button>
             {error && <p className={styles.errorMessage}>{error}</p>}
           </form>
-          <p className={styles.redirectMessage}>
-            Already have an account? <a href="/login">Login here</a>.
-          </p>
         </div>
       </CSSTransition>
     </div>

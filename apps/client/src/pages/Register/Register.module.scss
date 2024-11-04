@@ -1,4 +1,5 @@
 @use '../../styles/_variables' as vars;
+@use 'sass:color';
 
 .registerContainer {
   display: flex;
@@ -127,7 +128,7 @@
   }
 
   &:not(:disabled):hover {
-    background-color: darken(vars.$primary-color, 10%);
+    background-color: color.adjust(vars.$primary-color, $lightness: -10%);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 

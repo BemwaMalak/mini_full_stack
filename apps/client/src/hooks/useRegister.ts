@@ -22,8 +22,7 @@ export const useRegister = () => {
       }
 
       toast.success(RESPONSE_MESSAGES['S003']);
-      // Optionally, navigate to login page or dashboard
-      navigate('/login');
+      navigate('/home');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

@@ -1,54 +1,66 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Spinner from '../Spinner/Spinner';
 import styles from './NavigationBar.module.scss';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
+import { useLogout } from '../../hooks/useLogout';
 
 const NavigationBar: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const navigate = useNavigate();
+  const { isAuthenticated, user, loading, error } = useAuth();
+  const { logout } = useLogout();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
+  useEffect(() => {
+    if (error) {
+      toast.error(error as string);
+    }
+  }, [error]);
 
   return (
-    <nav className={styles.navbar}>
-      <div className={styles.navContainer}>
-        <Link to="/" className={styles.brand}>
-          MedicationApp
-        </Link>
-        <ul className={styles.navLinks}>
-          {isAuthenticated ? (
-            <>
-              <li>
-                <Link to="/home" className={styles.navLink}>
-                  Home
-                </Link>
-              </li>
-              <li>
-                <button onClick={handleLogout} className={styles.navButton}>
-                  Logout
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/login" className={styles.navLink}>
-                  Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className={styles.navLink}>
-                  Register
-                </Link>
-              </li>
-            </>
-          )}
-        </ul>
-      </div>
-    </nav>
+    <>
+      <Spinner loading={loading} />
+      <nav className={styles.navbar}>
+        <div className={styles.navContainer}>
+          <Link to="/" className={styles.brand}>
+            Pharmacy App
+          </Link>
+          <ul className={styles.navLinks}>
+            {isAuthenticated ? (
+              <>
+                <li>
+                  <span className={styles.greeting}>
+                    Hello, {user?.username}!
+                  </span>
+                </li>
+                <li>
+                  <Link to="/home" className={styles.navLink}>
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register" className={styles.navLink}>
+                    Register new user
+                  </Link>
+                </li>
+                <li>
+                  <button onClick={logout} className={styles.navButton}>
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/login" className={styles.navLink}>
+                    Login
+                  </Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </nav>
+    </>
   );
 };
 

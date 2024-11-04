@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { loginUser, LoginCredentials } from '../services/authService';
 import { RESPONSE_MESSAGES } from '../constants/responseMessages';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export const useLogin = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const login = async (credentials: LoginCredentials) => {
     setError(null);
@@ -20,6 +22,7 @@ export const useLogin = () => {
       }
 
       toast.success(RESPONSE_MESSAGES['S001']);
+      navigate('/home');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

@@ -4,6 +4,7 @@ export const AUTH_ENDPOINTS = {
   LOGIN: `${API_BASE_URL}/auth/login/`,
   LOGOUT: `${API_BASE_URL}/auth/logout/`,
   REGISTER: `${API_BASE_URL}/auth/register/`,
+  USER_INFO: `${API_BASE_URL}/auth/user-info/`,
 };
 
 export const MEDICATION_ENDPOINTS = {
