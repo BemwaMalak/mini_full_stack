@@ -497,3 +497,54 @@ class RegisterApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.json(), expected_response)
+
+
+class UserInfoApiViewTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse("user-info")
+
+        cls.username = "testuser"
+        cls.password = "testpassword"
+        cls.email = "testuser@example.com"
+        cls.role = UserModel.Role.USER
+        cls.user = UserModel.objects.create_user(
+            username=cls.username,
+            password=cls.password,
+            email=cls.email,
+            role=cls.role,
+        )
+
+    def test_get_user_info_authenticated(self):
+        """
+        Test that an authenticated user can retrieve their own information.
+        """
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.get(self.url)
+
+        expected_response = {
+            "code": RESPONSE_CODES["USER_INFO_SUCCESS"],
+            "data": {
+                "username": self.username,
+                "email": self.email,
+                "role": self.role,
+            },
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), expected_response)
+
+    def test_get_user_info_unauthenticated(self):
+        """
+        Test that an unauthenticated user receives a 403 Forbidden response.
+        """
+        response = self.client.get(self.url)
+
+        expected_response = {
+            "code": RESPONSE_CODES["FORBIDDEN"],
+            "data": None,
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.json(), expected_response)

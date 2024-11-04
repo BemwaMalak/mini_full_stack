@@ -143,3 +143,20 @@ class RegisterApiView(APIView):
             data=serializer.errors,
             status_code=HTTP_400_BAD_REQUEST,
         )
+
+class UserInfoApiView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_data = {
+            "username": request.user.username,
+            "email": request.user.email,
+            "role": request.user.role,
+        }
+        return json_response(
+            code=RESPONSE_CODES["USER_INFO_SUCCESS"],
+            data=user_data,
+            status_code=HTTP_200_OK,
+        )
+ 
