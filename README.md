@@ -65,6 +65,13 @@ Before you begin, ensure you have met the following requirements:
 
    ```bash
    git clone https://github.com/BemwaMalak/mini_full_stack.git
-   cd your-repo
+   cd mini_full_stack
    ```
+2. **Navigate to the Project Directory**
+
+After cloning the repository, navigate to the project's root directory where the `docker-compose.yml` file is located. This ensures that all Docker commands are executed in the correct context.
+
+```bash
+cd mini_full_stack
+```
 
