@@ -399,8 +399,8 @@ from .serializers import RefillRequestSerializer
 class RefillRequestApiViewTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.list_url = reverse("refillrequest-list-create")
-        cls.detail_url_template = "refillrequest-detail-update"
+        cls.list_url = reverse("refill-request-list-create")
+        cls.detail_url_template = "refill-request-detail-update"
 
         cls.admin_user = UserModel.objects.create_user(
             username="adminuser",

@@ -37,6 +37,13 @@ const NavigationBar: React.FC = () => {
                     Home
                   </Link>
                 </li>
+                {user?.role !== 'ADMIN' && (
+                  <li>
+                    <Link to="/my-requests" className={styles.navLink}>
+                      My Refill Requests
+                    </Link>
+                  </li>
+                )}
                 {user?.role === 'ADMIN' && (
                   <>
                     <li>

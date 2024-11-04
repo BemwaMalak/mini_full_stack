@@ -1,0 +1,106 @@
+@use '../../styles/_variables' as vars;
+@use 'sass:color';
+
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialogContent {
+  background: vars.$background-gradient;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-family: vars.$font-family;
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #fff;
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      font-size: 1rem;
+      border: 1px solid vars.$input-border;
+      border-radius: 4px;
+      background-color: #fff;
+      color: vars.$secondary-color;
+      font-family: vars.$font-family;
+    }
+
+    input[type='number'] {
+      -moz-appearance: textfield;
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+
+    .saveButton,
+    .cancelButton {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-family: vars.$font-family;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .saveButton {
+      background-color: vars.$primary-color;
+      color: #fff;
+
+      &:hover {
+        background-color: color.adjust(vars.$primary-color, $lightness: 10%);
+      }
+
+      &:disabled {
+        background-color: vars.$button-disabled-color;
+        cursor: not-allowed;
+      }
+    }
+
+    .cancelButton {
+      background-color: vars.$secondary-color;
+      color: #fff;
+
+      &:hover {
+        background-color: color.adjust(vars.$primary-color, $lightness: 10%);
+      }
+    }
+  }
+}

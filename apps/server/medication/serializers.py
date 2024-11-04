@@ -56,14 +56,12 @@ class RefillRequestSerializer(serializers.ModelSerializer):
 
 
 class RefillRequestDetailSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.username")
     medication = MedicationSerializer(read_only=True)
 
     class Meta:
         model = RefillRequest
         fields = [
             "id",
-            "user",
             "medication",
             "quantity",
             "status",

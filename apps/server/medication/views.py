@@ -13,7 +13,7 @@ from app.utils import json_response, ratelimit
 
 from .models import Medication, RefillRequest
 from .permissions import HasMedicationPermission, HasRefillRequestPermission
-from .serializers import MedicationSerializer, RefillRequestSerializer
+from .serializers import MedicationSerializer, RefillRequestDetailSerializer, RefillRequestSerializer
 
 
 class MedicationApiView(APIView):
@@ -192,7 +192,7 @@ class RefillRequestApiView(APIView):
             refill_requests = RefillRequest.objects.all()
         else:
             refill_requests = RefillRequest.objects.filter(user=request.user)
-        serializer = RefillRequestSerializer(refill_requests, many=True)
+        serializer = RefillRequestDetailSerializer(refill_requests, many=True)
         return json_response(
             code=RESPONSE_CODES["REFILL_REQUEST_LIST_SUCCESS"],
             data=serializer.data,

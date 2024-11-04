@@ -1,0 +1,29 @@
+.myRequestsPage {
+    padding: 2rem;
+    font-family: 'Roboto', sans-serif;
+  
+    h1 {
+      font-size: 1.8rem;
+      color: #3498db;
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .requestList {
+    list-style: none;
+    padding: 0;
+  
+    .requestItem {
+      background: #f4f6f9;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+      p {
+        margin: 0.3rem 0;
+        font-size: 1rem;
+      }
+    }
+  }
+  

@@ -9,10 +9,10 @@ urlpatterns = [
         MedicationApiView.as_view(),
         name="medication-detail-update",
     ),
-    path("refill/", RefillRequestApiView.as_view(), name="refillrequest-list-create"),
+    path("refill-request/", RefillRequestApiView.as_view(), name="refill-request-list-create"),
     path(
-        "refill/<int:pk>/",
+        "refill-request/<int:pk>/",
         RefillRequestApiView.as_view(),
-        name="refillrequest-detail-update",
+        name="refill-request-detail-update",
     ),
 ]
