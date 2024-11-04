@@ -13,8 +13,9 @@ from rest_framework.views import APIView
 
 from app.utils import json_response, ratelimit
 
-from .enums import Message
-from .serializers import LoginSerializer, UserSerializer
+from app.error_codes import ERROR_CODES
+from .permissions import HasRegisterPermission
+from .serializers import LoginSerializer, RegistrationSerializer, UserSerializer
 
 UserModel = get_user_model()
 
@@ -29,7 +30,7 @@ class LoginApiView(APIView):
         # Check if the request was blocked by the rate limit
         if getattr(request, "limited", False):
             return json_response(
-                message=Message.TOO_MANY_REQUESTS.value,
+                code=ERROR_CODES['TOO_MANY_REQUESTS'],
                 data=None,
                 status_code=HTTP_403_FORBIDDEN,
             )
@@ -50,7 +51,7 @@ class LoginApiView(APIView):
                 # Check if the account is locked due to multiple failed login attempts
                 if user.is_locked:
                     return json_response(
-                        message=Message.ACCOUNT_LOCKED.value,
+                        code=ERROR_CODES['ACCOUNT_LOCKED'],
                         data=None,
                         status_code=HTTP_403_FORBIDDEN,
                     )
@@ -67,7 +68,7 @@ class LoginApiView(APIView):
                     login(request, user_auth)
                     user_data = UserSerializer(user_auth).data
                     return json_response(
-                        message=Message.LOGIN_SUCCESS.value,
+                        code=ERROR_CODES['LOGIN_SUCCESS'],
                         data=user_data,
                         status_code=HTTP_200_OK,
                     )
@@ -78,21 +79,21 @@ class LoginApiView(APIView):
                         user.is_locked = True
                     user.save()
                     return json_response(
-                        message=Message.INVALID_CREDENTIALS.value,
+                        code=ERROR_CODES['INVALID_CREDENTIALS'],
                         data=None,
                         status_code=HTTP_401_UNAUTHORIZED,
                     )
             else:
                 # User not found
                 return json_response(
-                    message=Message.INVALID_CREDENTIALS.value,
+                    code=ERROR_CODES['INVALID_CREDENTIALS'],
                     data=None,
                     status_code=HTTP_401_UNAUTHORIZED,
                 )
 
         # Validation failed
         return json_response(
-            message=Message.VALIDATION_ERROR.value,
+            code=ERROR_CODES['VALIDATION_ERROR'],
             data=serializer.errors,
             status_code=HTTP_400_BAD_REQUEST,
         )
@@ -105,7 +106,40 @@ class LogoutApiView(APIView):
     def post(self, request):
         logout(request)
         return json_response(
-            message=Message.LOGOUT_SUCCESS.value,
+            code=ERROR_CODES['LOGOUT_SUCCESS'],
             data=None,
             status_code=HTTP_200_OK,
+        )
+
+
+class RegisterApiView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [HasRegisterPermission]
+
+    @method_decorator(csrf_protect)
+    @method_decorator(ratelimit(key="ip", rate="5/30s", method="POST", block=True))
+    def post(self, request):
+        # Check if the request was blocked by the rate limit
+        if getattr(request, "limited", False):
+            return json_response(
+                code=ERROR_CODES['TOO_MANY_REQUESTS'],
+                data=None,
+                status_code=HTTP_403_FORBIDDEN,
+            )
+
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            user_data = UserSerializer(user).data
+            return json_response(
+                code=ERROR_CODES['REGISTRATION_SUCCESS'],
+                data=user_data,
+                status_code=HTTP_200_OK,
+            )
+
+        # Validation failed
+        return json_response(
+            code=ERROR_CODES['VALIDATION_ERROR'],
+            data=serializer.errors,
+            status_code=HTTP_400_BAD_REQUEST,
         )

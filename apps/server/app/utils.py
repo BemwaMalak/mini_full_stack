@@ -6,11 +6,11 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 
-from authentication.enums import Message
+from .error_codes import ERROR_CODES
 
 
-def json_response(message=None, data=None, status_code=200):
-    return Response({"message": message, "data": data}, status=status_code)
+def json_response(code=None, data=None, status_code=200):
+    return Response({"code": code, "data": data}, status=status_code)
 
 
 def exception_handler(exc, context):
@@ -19,15 +19,13 @@ def exception_handler(exc, context):
     if response is not None:
         if response.status_code == HTTP_401_UNAUTHORIZED:
             response.data = {
-                "message": Message.UNAUTHORIZED.value,
+                "code": ERROR_CODES['UNAUTHORIZED'],
                 "data": None,
-                "status_code": HTTP_401_UNAUTHORIZED,
             }
         elif response.status_code == HTTP_403_FORBIDDEN:
             response.data = {
-                "message": Message.FORBIDDEN.value,
+                "code": ERROR_CODES['FORBIDDEN'],
                 "data": None,
-                "status_code": HTTP_403_FORBIDDEN,
             }
 
     return response

@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import Group, Permission, PermissionsMixin
+from django.core.validators import EmailValidator
 from django.db import models
 
 
@@ -23,6 +24,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         ADMIN = "ADMIN", "Admin"
 
     username = models.CharField(unique=True, max_length=50)
+    email = models.EmailField(unique=True, max_length=255, validators=[EmailValidator])
     role = models.CharField(max_length=5, choices=Role.choices)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -30,6 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_locked = models.BooleanField(default=False)
 
     USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email", "role"]
 
     objects = UserManager()
 

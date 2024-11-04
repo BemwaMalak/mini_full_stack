@@ -3,7 +3,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .enums import Message
+from app.error_codes import ERROR_CODES
+from .serializers import UserSerializer
 
 UserModel = get_user_model()
 
@@ -14,8 +15,9 @@ class LoginApiViewTests(APITestCase):
         cls.url = reverse("login")
         cls.username = "testuser"
         cls.password = "testpassword"
+        cls.email = "test@gmail.com"
         cls.user = UserModel.objects.create_user(
-            username=cls.username, password=cls.password, role=UserModel.Role.USER
+            username=cls.username, password=cls.password, email=cls.email, role=UserModel.Role.USER
         )
 
     def setUp(self):
@@ -35,10 +37,16 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        # Serialize the user data
+        user_data = UserSerializer(self.user).data
+
+        expected_response = {
+            "code": ERROR_CODES['LOGIN_SUCCESS'],
+            "data": user_data,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], Message.LOGIN_SUCCESS.value)
-        self.assertIn("data", response.data)
-        self.assertEqual(response.data["data"]["username"], self.username)
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_invalid_credentials(self):
         """
@@ -51,9 +59,13 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
-        self.assertIsNone(response.data.get("data"))
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_missing_data(self):
         """
@@ -65,9 +77,14 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        # Include the validation errors from the response
+        expected_response = {
+            "code": ERROR_CODES['VALIDATION_ERROR'],
+            "data": response.data["data"],
+        }
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["message"], Message.VALIDATION_ERROR.value)
-        self.assertIn("password", response.data["data"])
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_empty_username(self):
         """
@@ -80,9 +97,13 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['VALIDATION_ERROR'],
+            "data": response.data["data"],
+        }
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["message"], Message.VALIDATION_ERROR.value)
-        self.assertIn("username", response.data["data"])
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_empty_password(self):
         """
@@ -95,9 +116,13 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['VALIDATION_ERROR'],
+            "data": response.data["data"],
+        }
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["message"], Message.VALIDATION_ERROR.value)
-        self.assertIn("password", response.data["data"])
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_inactive_user(self):
         """
@@ -113,9 +138,13 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
-        self.assertIsNone(response.data.get("data"))
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_case_insensitive_username(self):
         """
@@ -128,8 +157,13 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_sql_injection(self):
         """
@@ -142,9 +176,13 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
-        self.assertIsNone(response.data.get("data"))
+        self.assertEqual(response.json(), expected_response)
 
     def test_account_lockout_after_failed_attempts(self):
         """
@@ -158,18 +196,24 @@ class LoginApiViewTests(APITestCase):
         max_attempts = 5
         for _ in range(max_attempts):
             response = self.client.post(self.url, data, format="json")
+            expected_response = {
+                "code": ERROR_CODES['INVALID_CREDENTIALS'],
+                "data": None,
+            }
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-            self.assertEqual(
-                response.data["message"], Message.INVALID_CREDENTIALS.value
-            )
+            self.assertEqual(response.json(), expected_response)
 
         # Now, even with correct credentials, the account should be locked
         data["password"] = self.password
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['ACCOUNT_LOCKED'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(response.data["message"], Message.ACCOUNT_LOCKED.value)
-        self.assertIsNone(response.data.get("data"))
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_nonexistent_user(self):
         """
@@ -182,16 +226,20 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        expected_response = {
+            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
-        self.assertIsNone(response.data.get("data"))
+        self.assertEqual(response.json(), expected_response)
 
     def test_login_with_special_characters_in_username(self):
         """
         Test login with special characters in username
         """
         special_username = "user!@#"
-        UserModel.objects.create_user(
+        special_user = UserModel.objects.create_user(
             username=special_username, password=self.password, role=UserModel.Role.USER
         )
 
@@ -202,9 +250,15 @@ class LoginApiViewTests(APITestCase):
 
         response = self.client.post(self.url, data, format="json")
 
+        user_data = UserSerializer(special_user).data
+
+        expected_response = {
+            "code": ERROR_CODES['LOGIN_SUCCESS'],
+            "data": user_data,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], Message.LOGIN_SUCCESS.value)
-        self.assertEqual(response.data["data"]["username"], special_username)
+        self.assertEqual(response.json(), expected_response)
 
 
 class LogoutApiViewTests(APITestCase):
@@ -213,8 +267,9 @@ class LogoutApiViewTests(APITestCase):
         cls.url = reverse("logout")
         cls.username = "testuser"
         cls.password = "testpassword"
+        cls.email = "test@gmail.com"
         cls.user = UserModel.objects.create_user(
-            username=cls.username, password=cls.password
+            username=cls.username, password=cls.password, email=cls.email, role=UserModel.Role.USER
         )
 
     def setUp(self):
@@ -227,9 +282,13 @@ class LogoutApiViewTests(APITestCase):
         """
         response = self.client.post(self.url)
 
+        expected_response = {
+            "code": ERROR_CODES['LOGOUT_SUCCESS'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], Message.LOGOUT_SUCCESS.value)
-        self.assertIsNone(response.data["data"])
+        self.assertEqual(response.json(), expected_response)
 
     def test_logout_unauthenticated_user(self):
         """
@@ -239,6 +298,10 @@ class LogoutApiViewTests(APITestCase):
 
         response = self.client.post(self.url)
 
+        expected_response = {
+            "code": ERROR_CODES['FORBIDDEN'],
+            "data": None,
+        }
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(response.data["message"], Message.FORBIDDEN.value)
-        self.assertIsNone(response.data.get("data"))
+        self.assertEqual(response.json(), expected_response)
