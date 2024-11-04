@@ -9,6 +9,7 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Home from './pages/Home/Home';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import AdminProtectedRoute from './components/AdminProtectedRoute/AdminProtectedRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from './components/Spinner/Spinner';
@@ -34,9 +35,9 @@ function App(): React.JSX.Element {
         <Route
           path="/register"
           element={
-            <ProtectedRoute>
+            <AdminProtectedRoute>
               <Register />
-            </ProtectedRoute>
+            </AdminProtectedRoute>
           }
         />
         <Route

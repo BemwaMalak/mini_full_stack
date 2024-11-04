@@ -23,7 +23,7 @@ export const useAuth = (): UseAuthReturn => {
 
   useEffect(() => {
     const fetchUserInfo = async () => {
-      setError(null); // Reset error at the start
+      setError(null);
       try {
         const response = await fetch(AUTH_ENDPOINTS.USER_INFO, {
           method: 'GET',

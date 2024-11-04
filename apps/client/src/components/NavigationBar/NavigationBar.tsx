@@ -37,11 +37,13 @@ const NavigationBar: React.FC = () => {
                     Home
                   </Link>
                 </li>
-                <li>
-                  <Link to="/register" className={styles.navLink}>
-                    Register new user
-                  </Link>
-                </li>
+                {user?.role === 'ADMIN' && (
+                  <li>
+                    <Link to="/register" className={styles.navLink}>
+                      Register new user
+                    </Link>
+                  </li>
+                )}
                 <li>
                   <button onClick={logout} className={styles.navButton}>
                     Logout
