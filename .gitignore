@@ -93,6 +93,8 @@ apps/server/db.sqlite3
 
 # Client
 ###############################################
+apps/client/.env
+
 # Logs
 apps/client/logs/
 apps/client/*.log

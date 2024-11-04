@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "module": "commonjs",
+    "module": "ES2022",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -21,8 +21,9 @@
     "strict": true,
     "esModuleInterop": true,
     "allowJs": true,
-    "resolveJsonModule": true,
     "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
     "isolatedModules": true
   },
   "include": ["src", "vite.config.ts"]

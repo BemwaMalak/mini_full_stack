@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
+import { useLogin } from '../hooks/useLogin';
 
 const Login = (): React.JSX.Element => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { login, error, loading } = useLogin();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt with:', { email, password });
+    await login({ username, password });
   };
 
   return (
@@ -14,11 +16,11 @@ const Login = (): React.JSX.Element => {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email:</label>
+          <label>Username:</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
@@ -31,7 +33,10 @@ const Login = (): React.JSX.Element => {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+        {error && <p className="error-message">{error}</p>}
       </form>
     </div>
   );
