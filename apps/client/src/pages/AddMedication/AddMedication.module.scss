@@ -1,14 +1,11 @@
 @use '../../styles/_variables' as vars;
 @use 'sass:color';
 
-.registerContainer {
+.container {
   padding: 2rem;
   font-family: vars.$font-family;
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .title {
@@ -16,19 +13,23 @@
   color: vars.$secondary-color;
   font-size: 2rem;
   margin-bottom: 2rem;
-  font-weight: 600;
+}
 
-  @media (max-width: 500px) {
-    font-size: 1.5rem;
-  }
+.error {
+  text-align: center;
+  color: vars.$error-color;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.inputGroup {
+.formGroup {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.5rem;
@@ -40,7 +41,8 @@
     font-size: 1rem;
   }
 
-  .input {
+  .input,
+  .textarea {
     padding: 0.75rem;
     border: 1px solid vars.$input-border;
     border-radius: 4px;
@@ -54,48 +56,17 @@
     }
   }
 
-  .passwordWrapper {
-    display: flex;
-    align-items: center;
-
-    .input {
-      flex: 1;
-    }
-
-    .toggleButton {
-      margin-left: -40px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: vars.$primary-color;
-      font-weight: bold;
-      font-size: 1rem;
-
-      &:focus {
-        outline: none;
-      }
-
-      svg {
-        width: 1rem;
-        height: 1rem;
-      }
-    }
+  .textarea {
+    resize: vertical;
+    min-height: 100px;
   }
 
-  .checkboxLabel {
-    display: flex;
-    align-items: center;
-    color: #555555;
-    font-size: 1rem;
-    font-weight: 500;
-
-    .checkbox {
-      margin-right: 0.5rem;
-    }
+  .inputFile {
+    padding: 0;
   }
 }
 
-.button {
+.submitButton {
   padding: 0.75rem;
   background-color: vars.$primary-color;
   color: #ffffff;
@@ -115,19 +86,23 @@
     background-color: color.adjust(vars.$primary-color, $lightness: 10%);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-
-  @media (max-width: 500px) {
-    padding: 0.6rem;
-    font-size: 0.9rem;
-  }
 }
 
-.errorMessage {
-  text-align: center;
-  color: vars.$error-color;
-  font-size: 1rem;
-  margin-top: 1rem;
-  padding: 0.5rem;
-  background-color: rgba(231, 76, 60, 0.1);
-  border-radius: 4px;
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+
+  .submitButton {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
 }

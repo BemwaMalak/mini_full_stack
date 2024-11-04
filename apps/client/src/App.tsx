@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from './components/Spinner/Spinner';
 import { useAuth } from './hooks/useAuth';
+import AddMedication from './pages/AddMedication/AddMedication';
 
 function App(): React.JSX.Element {
   const { isAuthenticated, loading } = useAuth();
@@ -37,6 +38,14 @@ function App(): React.JSX.Element {
           element={
             <AdminProtectedRoute>
               <Register />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/add-medication"
+          element={
+            <AdminProtectedRoute>
+              <AddMedication />
             </AdminProtectedRoute>
           }
         />

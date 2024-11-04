@@ -37,7 +37,7 @@ class MedicationApiView(APIView):
                     data=None,
                     status_code=HTTP_404_NOT_FOUND,
                 )
-            serializer = MedicationSerializer(medication)
+            serializer = MedicationSerializer(medication, context={'request': request})
             return json_response(
                 code=RESPONSE_CODES["MEDICATION_DETAIL_SUCCESS"],
                 data=serializer.data,
@@ -45,7 +45,7 @@ class MedicationApiView(APIView):
             )
         else:
             medications = Medication.objects.all()
-            serializer = MedicationSerializer(medications, many=True)
+            serializer = MedicationSerializer(medications, many=True, context={'request': request})
             return json_response(
                 code=RESPONSE_CODES["MEDICATION_LIST_SUCCESS"],
                 data=serializer.data,

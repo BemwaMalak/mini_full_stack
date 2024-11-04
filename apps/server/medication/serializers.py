@@ -4,7 +4,7 @@ from .models import Medication, RefillRequest
 
 
 class MedicationSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=False, allow_null=True)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Medication
@@ -21,6 +21,12 @@ class MedicationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "added_by", "created_at", "updated_at"]
 
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+    
     def create(self, validated_data):
         user = self.context["request"].user
         validated_data["added_by"] = user
