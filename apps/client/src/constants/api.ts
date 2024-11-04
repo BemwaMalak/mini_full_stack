@@ -16,4 +16,5 @@ export const REFILL_REQUEST_ENDPOINTS = {
   LIST_CREATE: `${API_BASE_URL}/medication/refill-request/`,
   DETAIL_UPDATE: (pk: number) =>
     `${API_BASE_URL}/medication/refill-request/${pk}/`,
+  AGGREGATE: `${API_BASE_URL}/medication/refill-request/aggregate/`,
 };

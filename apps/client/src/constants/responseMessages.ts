@@ -20,4 +20,5 @@ export const RESPONSE_MESSAGES: Record<string, string> = {
   S010: 'Medication deleted successfully.',
   S011: 'Medication updated successfully.',
   S012: 'Refill request updated successfully.',
+  S013: 'Refill request aggregate data retrieved successfully.',
 };

@@ -47,6 +47,11 @@ const NavigationBar: React.FC = () => {
                 {user?.role === 'ADMIN' && (
                   <>
                     <li>
+                      <Link to="/dashboard" className={styles.navLink}>
+                        Dashboard
+                      </Link>
+                    </li>
+                    <li>
                       <Link to="/register" className={styles.navLink}>
                         Register New User
                       </Link>

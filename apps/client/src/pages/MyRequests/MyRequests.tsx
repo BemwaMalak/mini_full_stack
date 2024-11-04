@@ -5,7 +5,7 @@ import {
   RefillRequest,
 } from '../../services/refillRequestsService';
 import Spinner from '../../components/Spinner/Spinner';
-import styles from './MyRequestsPage.module.scss';
+import styles from './MyRequests.module.scss';
 import { RESPONSE_MESSAGES } from '../../constants/responseMessages';
 
 const MyRequestsPage: React.FC = () => {

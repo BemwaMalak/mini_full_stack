@@ -15,7 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Spinner from './components/Spinner/Spinner';
 import { useAuth } from './hooks/useAuth';
 import AddMedication from './pages/AddMedication/AddMedication';
-import MyRequestsPage from './pages/MyRequestsPage/MyRequestsPage';
+import MyRequestsPage from './pages/MyRequests/MyRequests';
+import DashboardPage from './pages/Dashboard/Dashboard';
 
 function App(): React.JSX.Element {
   const { isAuthenticated, loading } = useAuth();
@@ -48,6 +49,14 @@ function App(): React.JSX.Element {
             <ProtectedRoute>
               <MyRequestsPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <AdminProtectedRoute>
+              <DashboardPage />
+            </AdminProtectedRoute>
           }
         />
         <Route

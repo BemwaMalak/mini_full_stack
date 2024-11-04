@@ -1,4 +1,5 @@
 from django.utils.decorators import method_decorator
+from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import (
     HTTP_200_OK,
@@ -187,6 +188,9 @@ class RefillRequestApiView(APIView):
         """
         List refill requests for the authenticated user.
         """
+        if request.path.endswith("/aggregate/"):
+            return self.get_aggregate_refill_counts(request)
+        
         refill_requests = None
         if request.user.role == "ADMIN":
             refill_requests = RefillRequest.objects.all()
@@ -232,5 +236,21 @@ class RefillRequestApiView(APIView):
         return json_response(
             code=RESPONSE_CODES["REFILL_REQUEST_UPDATED"],
             data=RefillRequestSerializer(refill_request).data,
+            status_code=HTTP_200_OK,
+        )
+    
+    def get_aggregate_refill_counts(self, request):
+        """
+        Return the count of refill requests for each medication.
+        """
+        refill_counts = (
+            Medication.objects
+            .annotate(refill_request_count=Count('refill_requests'))
+            .values('name', 'refill_request_count')
+        )
+
+        return json_response(
+            code=RESPONSE_CODES["REFILL_REQUEST_AGGREGATE_SUCCESS"],
+            data=list(refill_counts),
             status_code=HTTP_200_OK,
         )

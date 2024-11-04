@@ -16,3 +16,10 @@ export const fetchRefillRequests = async (): Promise<Response> => {
     credentials: 'include',
   });
 };
+export const fetchRefillRequestsAggregate = async (): Promise<Response> => {
+  return fetch(REFILL_REQUEST_ENDPOINTS.AGGREGATE, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+};
