@@ -60,8 +60,8 @@ class MedicationApiView(APIView):
                 data=None,
                 status_code=HTTP_400_BAD_REQUEST,
             )
-
-        serializer = MedicationSerializer(data=request.data)
+        
+        serializer = MedicationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save(added_by=request.user)
             return json_response(

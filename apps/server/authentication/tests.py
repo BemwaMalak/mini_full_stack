@@ -294,31 +294,54 @@ class LogoutApiViewTests(APITestCase):
 class RegisterApiViewTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        # Seed initial data
         call_command("seed_groups")
 
+        # Endpoint for registration
         cls.url = reverse("register")
+
+        # User details for registration
         cls.username = "testuser"
         cls.password = "StrongPassword123"
         cls.email = "testuser@example.com"
 
-        cls.user = UserModel.objects.create_user(
+        # Create an admin user
+        cls.admin_user = UserModel.objects.create_user(
             username="admintest",
             password="12345678a",
             email="admintest@gmail.com",
             role=UserModel.Role.ADMIN,
         )
 
-    def setUp(self):
-        self.client.login(username="admintest", password="12345678a")
+        # Create a regular (non-admin) user
+        cls.regular_user = UserModel.objects.create_user(
+            username="regulartest",
+            password="password123",
+            email="regular@example.com",
+            role=UserModel.Role.USER,
+        )
 
-    def test_successful_registration(self):
+    def authenticate_as_admin(self):
+        """Authenticate the test client as the admin user."""
+        self.client.logout()
+        self.client.login(username=self.admin_user.username, password="12345678a")
+
+    def authenticate_as_regular_user(self):
+        """Authenticate the test client as the regular user."""
+        self.client.logout()
+        self.client.login(username=self.regular_user.username, password="password123")
+
+    def test_admin_can_register_user_successfully(self):
         """
-        Test successful user registration
+        Ensure that an admin user can register a new user successfully.
         """
+        self.authenticate_as_admin()
+
         data = {
             "username": self.username,
             "password": self.password,
             "email": self.email,
+            "role": "USER",
         }
 
         response = self.client.post(self.url, data, format="json")
@@ -334,10 +357,34 @@ class RegisterApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), expected_response)
 
+    def test_regular_user_cannot_register_user(self):
+        """
+        Ensure that a non-admin user cannot register a new user.
+        """
+        self.authenticate_as_regular_user()
+
+        data = {
+            "username": self.username,
+            "password": self.password,
+            "email": self.email,
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        expected_response = {
+            "code": RESPONSE_CODES["FORBIDDEN"],
+            "data": None,
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.json(), expected_response)
+
     def test_registration_with_existing_username(self):
         """
-        Test registration fails when the username already exists
+        Test that registration fails when the username already exists.
         """
+        self.authenticate_as_admin()
+
         # Create a user with the same username
         UserModel.objects.create_user(
             username=self.username,
@@ -363,8 +410,10 @@ class RegisterApiViewTests(APITestCase):
 
     def test_registration_with_invalid_email(self):
         """
-        Test registration fails with an invalid email format
+        Test that registration fails with an invalid email format.
         """
+        self.authenticate_as_admin()
+
         data = {
             "username": self.username,
             "password": self.password,
@@ -383,8 +432,10 @@ class RegisterApiViewTests(APITestCase):
 
     def test_registration_with_missing_fields(self):
         """
-        Test registration fails when required fields are missing
+        Test that registration fails when required fields are missing.
         """
+        self.authenticate_as_admin()
+
         data = {
             "username": self.username,
         }
@@ -401,8 +452,10 @@ class RegisterApiViewTests(APITestCase):
 
     def test_registration_with_weak_password(self):
         """
-        Test registration fails when the password does not meet complexity requirements
+        Test that registration fails when the password does not meet complexity requirements.
         """
+        self.authenticate_as_admin()
+
         data = {
             "username": self.username,
             "password": "123",
@@ -421,15 +474,16 @@ class RegisterApiViewTests(APITestCase):
 
     def test_registration_without_permission(self):
         """
-        Test registration fails when the user does not have permission
+        Test that registration fails when the user does not have admin permissions.
         """
+        self.authenticate_as_regular_user()
+
         data = {
             "username": self.username,
             "password": self.password,
             "email": self.email,
         }
 
-        # Mock the permission class to deny permission
         with patch(
             "authentication.permissions.HasRegisterPermission.has_permission",
             return_value=False,

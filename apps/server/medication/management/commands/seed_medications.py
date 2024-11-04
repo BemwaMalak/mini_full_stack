@@ -5,8 +5,9 @@ import random
 
 UserModel = get_user_model()
 
+
 class Command(BaseCommand):
-    help = 'Seed the database with sample Medication records.'
+    help = "Seed the database with sample Medication records."
 
     def handle(self, *args, **kwargs):
         # Define sample medication data
@@ -45,7 +46,11 @@ class Command(BaseCommand):
 
         users = UserModel.objects.filter(role="ADMIN")
         if not users.exists():
-            self.stdout.write(self.style.WARNING('No admins found in the database. Please create at least one admin first.'))
+            self.stdout.write(
+                self.style.WARNING(
+                    "No admins found in the database. Please create at least one admin first."
+                )
+            )
             return
 
         for med_data in medications_data:
@@ -56,11 +61,17 @@ class Command(BaseCommand):
                     "quantity": med_data["quantity"],
                     "instructions": med_data["instructions"],
                     "added_by": random.choice(users),
-                }
+                },
             )
             if created:
-                self.stdout.write(self.style.SUCCESS(f'Successfully added medication: {medication.name}'))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Successfully added medication: {medication.name}"
+                    )
+                )
             else:
-                self.stdout.write(self.style.WARNING(f'Medication {medication.name} already exists.'))
+                self.stdout.write(
+                    self.style.WARNING(f"Medication {medication.name} already exists.")
+                )
 
-        self.stdout.write(self.style.SUCCESS('Seeding completed successfully.'))
+        self.stdout.write(self.style.SUCCESS("Seeding completed successfully."))
