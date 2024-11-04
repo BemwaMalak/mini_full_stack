@@ -14,6 +14,7 @@ A basic full-stack application with a Django backend, React frontend, and a Post
 - [Setting Up the Media Folder](#setting-up-the-media-folder)
 - [Running the Containers](#running-the-containers)
 - [Post-Setup Commands](#post-setup-commands)
+- [Deploying to AWS EC2](#deploying-to-aws-ec2)
 - [Accessing the Application](#accessing-the-application)
 - [Troubleshooting](#troubleshooting)
 - [Additional Information](#additional-information)
@@ -197,6 +198,81 @@ After the containers are running, additional commands need to be executed inside
    ```
 
 These commands set up the initial database structure and seed sample data, making the application ready for use.
+
+## Deploying to AWS EC2
+
+To deploy this application to an AWS EC2 instance, follow these steps:
+
+1. **Launch an EC2 Instance**
+   - Sign in to your AWS account and navigate to the EC2 dashboard.
+   - Launch a new EC2 instance using an Ubuntu Server AMI (e.g., Ubuntu 22.04 LTS).
+   - Configure security groups to allow HTTP (port 80), HTTPS (port 443), and custom ports if necessary (e.g., 3000 and 8000).
+   - Generate and download a key pair (.pem file) to connect to the instance.
+
+2. **Connect to the EC2 Instance**
+   - Open a terminal on your local machine and connect to the instance:
+
+     ```bash
+     ssh -i /path/to/your-key.pem ubuntu@your-ec2-public-ip
+     ```
+
+3. **Install Docker and Docker Compose**
+   - Update the package index:
+
+     ```bash
+     sudo apt update
+     ```
+
+   - Install Docker:
+
+     ```bash
+     sudo apt install -y docker.io
+     ```
+
+   - Enable and start Docker:
+
+     ```bash
+     sudo systemctl enable docker
+     sudo systemctl start docker
+     ```
+
+   - Install Docker Compose:
+
+     ```bash
+     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+     sudo chmod +x /usr/local/bin/docker-compose
+     ```
+
+4. **Transfer Project Files to EC2**
+   - From your local machine or Github repo, transfer your project files to the EC2 instance using `scp`:
+
+     ```bash
+     scp -i /path/to/your-key.pem -r /path/to/your-project ubuntu@your-ec2-public-ip:/home/ubuntu/
+     ```
+
+5. **Configure Environment Variables**
+   - SSH into your instance and navigate to the project directory:
+
+     ```bash
+     cd /home/ubuntu/your-project
+     ```
+
+   - Set up the necessary `.env` files as described in the [Environment Variables](#environment-variables) section.
+
+6. **Run Docker Compose**
+   - Run the following command to build and start the Docker containers on the EC2 instance:
+
+     ```bash
+     sudo docker-compose up --build -d
+     ```
+
+7. **Execute Post-Setup Commands**
+   - Follow the [Post-Setup Commands](#post-setup-commands) to initialize the database and seed any necessary data.
+
+8. **Access the Application**
+   - Visit `http://your-ec2-public-ip:3000` for the client application and `http://your-ec2-public-ip:8000/admin` for the Django admin.
+
+**Note:** For a production deployment, consider using a reverse proxy (e.g., Nginx) and securing the connection with SSL certificates.
 
 ## Accessing the Application
 
