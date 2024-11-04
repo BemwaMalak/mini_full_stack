@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { loginUser, LoginCredentials } from '../services/authService';
-import { ERROR_CODES } from '../constants/errorCodes';
+import { RESPONSE_MESSAGES } from '../constants/responseMessages';
+import { toast } from 'react-toastify';
 
 export const useLogin = () => {
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const login = async (credentials: LoginCredentials) => {
     setError(null);
@@ -13,21 +14,21 @@ export const useLogin = () => {
       const response = await loginUser(credentials);
       if (!response.ok) {
         const errorData = await response.json();
-        const errorMessage = errorData.message || 'Login failed';
-
-        switch (errorData.code) {
-          case ERROR_CODES.ACCOUNT_LOCKED:
-            throw new Error(
-              'Account is locked due to multiple failed login attempts.',
-            );
-          case ERROR_CODES.TOO_MANY_REQUESTS:
-            throw new Error('Too many login attempts. Please try again later.');
-          default:
-            throw new Error(errorMessage);
-        }
+        const errorCode: string = errorData.code || 'E000'; // Default to E001 if code not present
+        const errorMessage = RESPONSE_MESSAGES[errorCode];
+        throw new Error(errorMessage);
       }
-    } catch (error) {
-      setError((error as Error).message);
+
+      // Successful login
+      toast.success(RESPONSE_MESSAGES['S001']);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+        toast.error(err.message);
+      } else {
+        setError(RESPONSE_MESSAGES['E000']);
+        toast.error(RESPONSE_MESSAGES['E000']);
+      }
     } finally {
       setLoading(false);
     }

@@ -1,0 +1,127 @@
+@use '../../styles/_variables' as vars;
+
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: vars.$background-gradient;
+  position: relative;
+  overflow: hidden;
+}
+
+.formWrapper {
+  background-color: #ffffff;
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.5s ease-out;
+  width: 100%;
+  max-width: 400px;
+
+  @media (max-width: 500px) {
+    padding: 1.5rem 2rem;
+    max-width: 90%;
+  }
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333333;
+
+  @media (max-width: 500px) {
+    font-size: 1.5rem;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  margin-bottom: 1rem;
+
+  .label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555555;
+  }
+
+  .input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid vars.$input-border;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: vars.$primary-color;
+      outline: none;
+    }
+  }
+
+  .passwordWrapper {
+    display: flex;
+    align-items: center;
+
+    .input {
+      flex: 1;
+    }
+
+    .toggleButton {
+      margin-left: -40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: vars.$primary-color;
+      font-weight: bold;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+.button {
+  padding: 0.75rem;
+  background-color: vars.$primary-color;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:disabled {
+    background-color: vars.$button-disabled-color;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    background-color: vars.$secondary-color;
+  }
+
+  @media (max-width: 500px) {
+    padding: 0.6rem;
+  }
+}
+
+.errorMessage {
+  margin-top: 1rem;
+  color: vars.$error-color;
+  text-align: center;
+}
+
+/* Slide Down Animation */
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

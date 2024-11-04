@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from django.core.management import call_command
 from unittest.mock import patch
-from app.error_codes import ERROR_CODES
+from app.response_codes import RESPONSE_CODES
 
 from .serializers import UserSerializer
 
@@ -46,7 +46,7 @@ class LoginApiViewTests(APITestCase):
         user_data = UserSerializer(self.user).data
 
         expected_response = {
-            "code": ERROR_CODES["LOGIN_SUCCESS"],
+            "code": RESPONSE_CODES["LOGIN_SUCCESS"],
             "data": user_data,
         }
 
@@ -65,7 +65,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["INVALID_CREDENTIALS"],
+            "code": RESPONSE_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -84,7 +84,7 @@ class LoginApiViewTests(APITestCase):
 
         # Include the validation errors from the response
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -103,7 +103,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -122,7 +122,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -144,7 +144,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["INVALID_CREDENTIALS"],
+            "code": RESPONSE_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -163,7 +163,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["INVALID_CREDENTIALS"],
+            "code": RESPONSE_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -182,7 +182,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["INVALID_CREDENTIALS"],
+            "code": RESPONSE_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -202,7 +202,7 @@ class LoginApiViewTests(APITestCase):
         for _ in range(max_attempts):
             response = self.client.post(self.url, data, format="json")
             expected_response = {
-                "code": ERROR_CODES["INVALID_CREDENTIALS"],
+                "code": RESPONSE_CODES["INVALID_CREDENTIALS"],
                 "data": None,
             }
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -213,7 +213,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["ACCOUNT_LOCKED"],
+            "code": RESPONSE_CODES["ACCOUNT_LOCKED"],
             "data": None,
         }
 
@@ -232,7 +232,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["INVALID_CREDENTIALS"],
+            "code": RESPONSE_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -265,7 +265,7 @@ class LogoutApiViewTests(APITestCase):
         response = self.client.post(self.url)
 
         expected_response = {
-            "code": ERROR_CODES["LOGOUT_SUCCESS"],
+            "code": RESPONSE_CODES["LOGOUT_SUCCESS"],
             "data": None,
         }
 
@@ -281,7 +281,7 @@ class LogoutApiViewTests(APITestCase):
         response = self.client.post(self.url)
 
         expected_response = {
-            "code": ERROR_CODES["FORBIDDEN"],
+            "code": RESPONSE_CODES["FORBIDDEN"],
             "data": None,
         }
 
@@ -325,7 +325,7 @@ class RegisterApiViewTests(APITestCase):
         user_data = UserSerializer(user).data
 
         expected_response = {
-            "code": ERROR_CODES["REGISTRATION_SUCCESS"],
+            "code": RESPONSE_CODES["REGISTRATION_SUCCESS"],
             "data": user_data,
         }
 
@@ -352,7 +352,7 @@ class RegisterApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],  # Validation errors
         }
 
@@ -372,7 +372,7 @@ class RegisterApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -390,7 +390,7 @@ class RegisterApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -410,7 +410,7 @@ class RegisterApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "code": RESPONSE_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -432,7 +432,7 @@ class RegisterApiViewTests(APITestCase):
             response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES["FORBIDDEN"],
+            "code": RESPONSE_CODES["FORBIDDEN"],
             "data": None,
         }
 

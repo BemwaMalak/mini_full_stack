@@ -1,4 +1,4 @@
-import { API_URLS } from '../constants/api';
+import { AUTH_ENDPOINTS } from '../constants/api';
 
 export interface LoginCredentials {
   username: string;
@@ -8,7 +8,7 @@ export interface LoginCredentials {
 export const loginUser = async (
   credentials: LoginCredentials,
 ): Promise<Response> => {
-  return fetch(API_URLS.LOGIN, {
+  return fetch(AUTH_ENDPOINTS.LOGIN, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
