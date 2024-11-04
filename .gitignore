@@ -19,7 +19,7 @@ node_modules
 ###############################################
 
 ### Media ###
-apps/server/media/
+apps/server/media
 
 ### macOS ###
 apps/server/.DS_Store
