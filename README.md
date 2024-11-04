@@ -13,6 +13,7 @@ A basic full-stack application with a Django backend, React frontend, and a Post
   - [Client `.env` File](#client-env-file)
 - [Setting Up the Media Folder](#setting-up-the-media-folder)
 - [Running the Containers](#running-the-containers)
+- [Post-Setup Commands](#post-setup-commands)
 - [Accessing the Application](#accessing-the-application)
 - [Troubleshooting](#troubleshooting)
 - [Additional Information](#additional-information)
@@ -162,6 +163,40 @@ To stop:
 ```bash
 docker-compose down
 ```
+## Post-Setup Commands
+
+After the containers are running, additional commands need to be executed inside the server container to set up the database:
+
+1. **Enter the Server Container**
+
+   ```bash
+   docker exec -it <container_id> /bin/bash
+   ```
+
+   Replace `<container_id>` with the actual container ID of the server.
+
+2. **Run Migrations**
+
+   ```bash
+   python3 manage.py migrate
+   ```
+
+3. **Seed Groups**
+
+   ```bash
+   python3 manage.py seed_groups
+   ```
+
+4. **Optional Data Seeding**
+
+   You can also seed random data for users or medications:
+
+   ```bash
+   python3 manage.py seed_users        # Seed random user accounts (password for all accounts is password123)
+   python3 manage.py seed_medications  # Seed random medication data
+   ```
+
+These commands set up the initial database structure and seed sample data, making the application ready for use.
 
 ## Accessing the Application
 
