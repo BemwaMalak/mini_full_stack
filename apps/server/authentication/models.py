@@ -2,14 +2,13 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import Group, Permission, PermissionsMixin
 from django.db import models
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     class Role(models.TextChoices):
         USER = "USER", "User"
         ADMIN = "ADMIN", "Admin"
 
-    username = models.CharField(
-        unique=True, max_length=50
-    )
+    username = models.CharField(unique=True, max_length=50)
     role = models.CharField(max_length=5, choices=Role.choices)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
