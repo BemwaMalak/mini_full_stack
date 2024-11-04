@@ -1,15 +1,12 @@
 import random
-
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-
-from medication.models import Medication
+from medication.models import Medication, RefillRequest
 
 UserModel = get_user_model()
 
-
 class Command(BaseCommand):
-    help = "Seed the database with sample Medication records."
+    help = "Seed the database with sample Medication records and random refill requests."
 
     def handle(self, *args, **kwargs):
         # Define sample medication data
@@ -76,4 +73,14 @@ class Command(BaseCommand):
                     self.style.WARNING(f"Medication {medication.name} already exists.")
                 )
 
-        self.stdout.write(self.style.SUCCESS("Seeding completed successfully."))
+            # Create random refill requests for each medication
+            num_requests = random.randint(1, 5)  # Number of refill requests to create
+            for _ in range(num_requests):
+                RefillRequest.objects.create(
+                    user=random.choice(users),
+                    medication=medication,
+                    quantity=random.randint(1, 10),  # Random quantity between 1 and 10
+                    status=random.choice(["PENDING", "APPROVED", "DENIED"]),
+                )
+
+        self.stdout.write(self.style.SUCCESS("Seeding of medications and refill requests completed successfully."))
