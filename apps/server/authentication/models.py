@@ -1,4 +1,5 @@
 import re
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import Group, Permission, PermissionsMixin
 from django.core.validators import EmailValidator
@@ -15,11 +16,13 @@ class UserManager(BaseUserManager):
 
         if not email:
             raise ValueError("The Email must be set")
-        
+
         # Check for special characters in the username
-        if not re.match(r'^[a-zA-Z0-9_]+$', username):
-            raise ValueError("The Username can only contain letters, numbers, and underscores")
-        
+        if not re.match(r"^[a-zA-Z0-9_]+$", username):
+            raise ValueError(
+                "The Username can only contain letters, numbers, and underscores"
+            )
+
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -38,10 +41,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     failed_login_attempts = models.IntegerField(default=0)
     is_locked = models.BooleanField(default=False)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email", "role"]
 

@@ -30,8 +30,10 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
+    "rest_framework",
     "app",
     "authentication",
+    "medication",
 ]
 
 MIDDLEWARE = [

@@ -4,6 +4,8 @@ from django.core.management.base import BaseCommand
 
 from authentication.enums import UserPermissions
 from authentication.models import User
+from medication.enums import MedicationPermissions
+from medication.models import Medication
 
 
 class Command(BaseCommand):
@@ -13,12 +15,17 @@ class Command(BaseCommand):
         groups_permissions = {
             "Admins": [
                 UserPermissions.ADD.value,
+                MedicationPermissions.ADD.value,
+                MedicationPermissions.VIEW.value,
             ],
-            "Users": [],
+            "Users": [
+                MedicationPermissions.VIEW.value,
+            ],
         }
 
         model_content_types = {
             "user": ContentType.objects.get_for_model(User),
+            "medication": ContentType.objects.get_for_model(Medication),
         }
 
         for group_name, permissions in groups_permissions.items():

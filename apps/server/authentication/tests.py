@@ -1,9 +1,11 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from django.core.management import call_command
-from unittest.mock import patch
+
 from app.response_codes import RESPONSE_CODES
 
 from .serializers import UserSerializer
@@ -292,7 +294,7 @@ class LogoutApiViewTests(APITestCase):
 class RegisterApiViewTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command('seed_groups')
+        call_command("seed_groups")
 
         cls.url = reverse("register")
         cls.username = "testuser"
@@ -305,7 +307,7 @@ class RegisterApiViewTests(APITestCase):
             email="admintest@gmail.com",
             role=UserModel.Role.ADMIN,
         )
-    
+
     def setUp(self):
         self.client.login(username="admintest", password="12345678a")
 
@@ -428,7 +430,10 @@ class RegisterApiViewTests(APITestCase):
         }
 
         # Mock the permission class to deny permission
-        with patch('authentication.permissions.HasRegisterPermission.has_permission', return_value=False):
+        with patch(
+            "authentication.permissions.HasRegisterPermission.has_permission",
+            return_value=False,
+        ):
             response = self.client.post(self.url, data, format="json")
 
         expected_response = {
