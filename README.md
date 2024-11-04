@@ -64,7 +64,7 @@ Before you begin, ensure you have met the following requirements:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/your-repo.git
+   git clone https://github.com/BemwaMalak/mini_full_stack.git
    cd your-repo
    ```
 
