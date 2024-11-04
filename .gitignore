@@ -18,6 +18,9 @@ node_modules
 # Server
 ###############################################
 
+### Media ###
+apps/server/media/
+
 ### macOS ###
 apps/server/.DS_Store
 apps/server/.AppleDouble
