@@ -19,11 +19,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = UserModel
         fields = ("username", "email", "password")
 
-    def validate_password(self, value):
-        # Use Django's built-in password validators
-        validate_password(value)
-        return value
-
     def create(self, validated_data):
         user = UserModel.objects.create_user(
             username=validated_data["username"],
@@ -35,6 +30,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         if UserModel.objects.filter(username=value).exists():
             raise serializers.ValidationError("Username is already taken.")
+        return value
+
+    def validate_password(self, value):
+        # Use Django's built-in password validators
+        validate_password(value)
         return value
 
 

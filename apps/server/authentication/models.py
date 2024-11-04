@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import Group, Permission, PermissionsMixin
 from django.core.validators import EmailValidator
@@ -5,14 +6,21 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, password=None, **extra_fields):
+    def create_user(self, username, email, password=None, **extra_fields):
         """
         Creates and saves a User with the given username and password.
         """
         if not username:
             raise ValueError("The Username must be set")
 
-        user = self.model(username=username, **extra_fields)
+        if not email:
+            raise ValueError("The Email must be set")
+        
+        # Check for special characters in the username
+        if not re.match(r'^[a-zA-Z0-9_]+$', username):
+            raise ValueError("The Username can only contain letters, numbers, and underscores")
+        
+        user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user

@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from app.error_codes import ERROR_CODES
+
 from .serializers import UserSerializer
 
 UserModel = get_user_model()
@@ -17,7 +18,10 @@ class LoginApiViewTests(APITestCase):
         cls.password = "testpassword"
         cls.email = "test@gmail.com"
         cls.user = UserModel.objects.create_user(
-            username=cls.username, password=cls.password, email=cls.email, role=UserModel.Role.USER
+            username=cls.username,
+            password=cls.password,
+            email=cls.email,
+            role=UserModel.Role.USER,
         )
 
     def setUp(self):
@@ -41,7 +45,7 @@ class LoginApiViewTests(APITestCase):
         user_data = UserSerializer(self.user).data
 
         expected_response = {
-            "code": ERROR_CODES['LOGIN_SUCCESS'],
+            "code": ERROR_CODES["LOGIN_SUCCESS"],
             "data": user_data,
         }
 
@@ -60,7 +64,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "code": ERROR_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -79,7 +83,7 @@ class LoginApiViewTests(APITestCase):
 
         # Include the validation errors from the response
         expected_response = {
-            "code": ERROR_CODES['VALIDATION_ERROR'],
+            "code": ERROR_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -98,7 +102,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['VALIDATION_ERROR'],
+            "code": ERROR_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -117,7 +121,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['VALIDATION_ERROR'],
+            "code": ERROR_CODES["VALIDATION_ERROR"],
             "data": response.data["data"],
         }
 
@@ -139,7 +143,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "code": ERROR_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -158,7 +162,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "code": ERROR_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -177,7 +181,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "code": ERROR_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
@@ -197,7 +201,7 @@ class LoginApiViewTests(APITestCase):
         for _ in range(max_attempts):
             response = self.client.post(self.url, data, format="json")
             expected_response = {
-                "code": ERROR_CODES['INVALID_CREDENTIALS'],
+                "code": ERROR_CODES["INVALID_CREDENTIALS"],
                 "data": None,
             }
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -208,7 +212,7 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['ACCOUNT_LOCKED'],
+            "code": ERROR_CODES["ACCOUNT_LOCKED"],
             "data": None,
         }
 
@@ -227,37 +231,11 @@ class LoginApiViewTests(APITestCase):
         response = self.client.post(self.url, data, format="json")
 
         expected_response = {
-            "code": ERROR_CODES['INVALID_CREDENTIALS'],
+            "code": ERROR_CODES["INVALID_CREDENTIALS"],
             "data": None,
         }
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.json(), expected_response)
-
-    def test_login_with_special_characters_in_username(self):
-        """
-        Test login with special characters in username
-        """
-        special_username = "user!@#"
-        special_user = UserModel.objects.create_user(
-            username=special_username, password=self.password, role=UserModel.Role.USER
-        )
-
-        data = {
-            "username": special_username,
-            "password": self.password,
-        }
-
-        response = self.client.post(self.url, data, format="json")
-
-        user_data = UserSerializer(special_user).data
-
-        expected_response = {
-            "code": ERROR_CODES['LOGIN_SUCCESS'],
-            "data": user_data,
-        }
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), expected_response)
 
 
@@ -269,7 +247,10 @@ class LogoutApiViewTests(APITestCase):
         cls.password = "testpassword"
         cls.email = "test@gmail.com"
         cls.user = UserModel.objects.create_user(
-            username=cls.username, password=cls.password, email=cls.email, role=UserModel.Role.USER
+            username=cls.username,
+            password=cls.password,
+            email=cls.email,
+            role=UserModel.Role.USER,
         )
 
     def setUp(self):
@@ -283,7 +264,7 @@ class LogoutApiViewTests(APITestCase):
         response = self.client.post(self.url)
 
         expected_response = {
-            "code": ERROR_CODES['LOGOUT_SUCCESS'],
+            "code": ERROR_CODES["LOGOUT_SUCCESS"],
             "data": None,
         }
 
@@ -299,7 +280,7 @@ class LogoutApiViewTests(APITestCase):
         response = self.client.post(self.url)
 
         expected_response = {
-            "code": ERROR_CODES['FORBIDDEN'],
+            "code": ERROR_CODES["FORBIDDEN"],
             "data": None,
         }
 
