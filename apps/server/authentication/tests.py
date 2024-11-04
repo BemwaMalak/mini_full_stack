@@ -2,7 +2,8 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-
+from django.core.management import call_command
+from unittest.mock import patch
 from app.error_codes import ERROR_CODES
 
 from .serializers import UserSerializer
@@ -278,6 +279,157 @@ class LogoutApiViewTests(APITestCase):
         self.client.logout()
 
         response = self.client.post(self.url)
+
+        expected_response = {
+            "code": ERROR_CODES["FORBIDDEN"],
+            "data": None,
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.json(), expected_response)
+
+
+class RegisterApiViewTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command('seed_groups')
+
+        cls.url = reverse("register")
+        cls.username = "testuser"
+        cls.password = "StrongPassword123"
+        cls.email = "testuser@example.com"
+
+        cls.user = UserModel.objects.create_user(
+            username="admintest",
+            password="12345678a",
+            email="admintest@gmail.com",
+            role=UserModel.Role.ADMIN,
+        )
+    
+    def setUp(self):
+        self.client.login(username="admintest", password="12345678a")
+
+    def test_successful_registration(self):
+        """
+        Test successful user registration
+        """
+        data = {
+            "username": self.username,
+            "password": self.password,
+            "email": self.email,
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        user = UserModel.objects.get(username=self.username)
+        user_data = UserSerializer(user).data
+
+        expected_response = {
+            "code": ERROR_CODES["REGISTRATION_SUCCESS"],
+            "data": user_data,
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), expected_response)
+
+    def test_registration_with_existing_username(self):
+        """
+        Test registration fails when the username already exists
+        """
+        # Create a user with the same username
+        UserModel.objects.create_user(
+            username=self.username,
+            password="DifferentPassword123",
+            email="different@example.com",
+        )
+
+        data = {
+            "username": self.username,
+            "password": self.password,
+            "email": self.email,
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        expected_response = {
+            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "data": response.data["data"],  # Validation errors
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), expected_response)
+
+    def test_registration_with_invalid_email(self):
+        """
+        Test registration fails with an invalid email format
+        """
+        data = {
+            "username": self.username,
+            "password": self.password,
+            "email": "invalid-email-format",
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        expected_response = {
+            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "data": response.data["data"],
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), expected_response)
+
+    def test_registration_with_missing_fields(self):
+        """
+        Test registration fails when required fields are missing
+        """
+        data = {
+            "username": self.username,
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        expected_response = {
+            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "data": response.data["data"],
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), expected_response)
+
+    def test_registration_with_weak_password(self):
+        """
+        Test registration fails when the password does not meet complexity requirements
+        """
+        data = {
+            "username": self.username,
+            "password": "123",
+            "email": self.email,
+        }
+
+        response = self.client.post(self.url, data, format="json")
+
+        expected_response = {
+            "code": ERROR_CODES["VALIDATION_ERROR"],
+            "data": response.data["data"],
+        }
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), expected_response)
+
+    def test_registration_without_permission(self):
+        """
+        Test registration fails when the user does not have permission
+        """
+        data = {
+            "username": self.username,
+            "password": self.password,
+            "email": self.email,
+        }
+
+        # Mock the permission class to deny permission
+        with patch('authentication.permissions.HasRegisterPermission.has_permission', return_value=False):
+            response = self.client.post(self.url, data, format="json")
 
         expected_response = {
             "code": ERROR_CODES["FORBIDDEN"],
