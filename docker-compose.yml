@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: ./apps/client
+    env_file:
+      - ./apps/client/.env
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./apps/server
+    env_file:
+      - ./apps/server/.env
+    command: ["/entrypoint.sh"]
+    volumes:
+      - ./apps/server:/server
+      - ./apps/server/staticfiles:/server/staticfiles
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: postgres
+    env_file:
+      - ./apps/server/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
