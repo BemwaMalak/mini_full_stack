@@ -50,3 +50,21 @@ Additionally, it has a dashboard that displays refill request statistics using a
 
 - **`.gitignore`**: Specifies files and directories that should be ignored by Git, such as environment files and compiled code.
 
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- **Docker**: Make sure Docker is installed on your machine. You can download it from [Docker Official Website](https://www.docker.com/get-started).
+- **Docker Compose**: Ensure Docker Compose is installed. It typically comes bundled with Docker Desktop.
+- **Git**: To clone the repository. Download from [Git Official Website](https://git-scm.com/downloads).
+
+## Installation
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/yourusername/your-repo.git
+   cd your-repo
+   ```
+
