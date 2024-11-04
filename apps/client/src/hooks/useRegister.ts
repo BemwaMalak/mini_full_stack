@@ -21,7 +21,6 @@ export const useRegister = () => {
         throw new Error(errorMessage);
       }
 
-      // Successful registration
       toast.success(RESPONSE_MESSAGES['S003']);
       // Optionally, navigate to login page or dashboard
       navigate('/login');

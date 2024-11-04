@@ -1,0 +1,43 @@
+@use '../../styles/_variables' as vars;
+
+.medicationItem {
+  background-color: #ffffff;
+  border: 1px solid vars.$input-border;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.medicationImage {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.medicationName {
+  color: vars.$secondary-color;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.medicationDosage,
+.medicationQuantity,
+.medicationInstructions,
+.medicationAddedBy,
+.medicationDates {
+  color: #555555;
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+  text-align: center;
+}

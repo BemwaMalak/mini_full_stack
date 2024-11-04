@@ -1,0 +1,81 @@
+@use '../../styles/_variables' as vars;
+
+.navbar {
+  background-color: vars.$secondary-color;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brand {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover {
+    color: lighten(vars.$primary-color, 10%);
+  }
+}
+
+.navLinks {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 0;
+
+  li {
+    margin-left: 1.5rem;
+  }
+}
+
+.navLink {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s;
+
+  &:hover {
+    color: lighten(vars.$primary-color, 10%);
+  }
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.3s;
+
+  &:hover {
+    color: lighten(vars.$primary-color, 10%);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .navLinks {
+    flex-direction: column;
+    width: 100%;
+    display: none;
+  }
+
+  .navContainer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

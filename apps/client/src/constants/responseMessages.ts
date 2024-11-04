@@ -10,4 +10,8 @@ export const RESPONSE_MESSAGES: Record<string, string> = {
   E006: 'Unauthorized access.',
   E007: "Forbidden. You don't have permission to access this resource.",
   S003: 'Registration successful.',
+  S004: 'Medication created successfully.',
+  E008: 'Medication not found.',
+  S005: 'Medications loaded successfully.',
+  S006: 'Medication details loaded successfully.',
 };

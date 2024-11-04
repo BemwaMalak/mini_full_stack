@@ -19,7 +19,6 @@ export const useLogin = () => {
         throw new Error(errorMessage);
       }
 
-      // Successful login
       toast.success(RESPONSE_MESSAGES['S001']);
     } catch (err) {
       if (err instanceof Error) {
