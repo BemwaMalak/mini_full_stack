@@ -9,3 +9,7 @@ class Message(Enum):
     ACCOUNT_LOCKED = (
         "Your account has been locked due to too many failed login attempts."
     )
+    LOGOUT_SUCCESS = "Logout successful"
+    NOT_AUTHENTICATED = "User not authenticated"
+    UNAUTHORIZED = "Unauthorized access."
+    FORBIDDEN = "You do not have permission to perform this action."

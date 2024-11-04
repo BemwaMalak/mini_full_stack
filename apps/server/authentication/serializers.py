@@ -1,6 +1,7 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from .models import User
+UserModel = get_user_model()
 
 
 class LoginSerializer(serializers.Serializer):
@@ -12,5 +13,5 @@ class LoginSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = UserModel
         fields = ["id", "username", "role"]

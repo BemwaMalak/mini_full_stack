@@ -1,8 +1,8 @@
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_400_BAD_REQUEST,
@@ -16,7 +16,6 @@ from app.utils import json_response, ratelimit
 from .enums import Message
 from .serializers import LoginSerializer, UserSerializer
 
-# Get the custom user model
 UserModel = get_user_model()
 
 
@@ -96,4 +95,17 @@ class LoginApiView(APIView):
             message=Message.VALIDATION_ERROR.value,
             data=serializer.errors,
             status_code=HTTP_400_BAD_REQUEST,
+        )
+
+
+class LogoutApiView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return json_response(
+            message=Message.LOGOUT_SUCCESS.value,
+            data=None,
+            status_code=HTTP_200_OK,
         )

@@ -93,7 +93,8 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
-    ]
+    ],
+    "EXCEPTION_HANDLER": "app.utils.exception_handler",
 }
 
 # Static and media files

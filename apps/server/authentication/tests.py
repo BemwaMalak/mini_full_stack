@@ -11,6 +11,7 @@ UserModel = get_user_model()
 class LoginApiViewTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        cls.url = reverse("login")
         cls.username = "testuser"
         cls.password = "testpassword"
         cls.user = UserModel.objects.create_user(
@@ -27,13 +28,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login with valid credentials
         """
-        url = reverse("login")
         data = {
             "username": self.username,
             "password": self.password,
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], Message.LOGIN_SUCCESS.value)
@@ -44,13 +44,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login with invalid credentials
         """
-        url = reverse("login")
         data = {
             "username": self.username,
             "password": "wrongpassword",
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
@@ -60,12 +59,11 @@ class LoginApiViewTests(APITestCase):
         """
         Test login with missing data (username or password)
         """
-        url = reverse("login")
         data = {
             "username": self.username,
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], Message.VALIDATION_ERROR.value)
@@ -75,13 +73,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login with empty username
         """
-        url = reverse("login")
         data = {
             "username": "",
             "password": self.password,
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], Message.VALIDATION_ERROR.value)
@@ -91,13 +88,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login with empty password
         """
-        url = reverse("login")
         data = {
             "username": self.username,
             "password": "",
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data["message"], Message.VALIDATION_ERROR.value)
@@ -110,13 +106,12 @@ class LoginApiViewTests(APITestCase):
         self.user.is_active = False
         self.user.save()
 
-        url = reverse("login")
         data = {
             "username": self.username,
             "password": self.password,
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
@@ -126,13 +121,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login where username case does not match
         """
-        url = reverse("login")
         data = {
             "username": self.username.upper(),
             "password": self.password,
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
@@ -141,13 +135,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login attempt with SQL injection attack in username
         """
-        url = reverse("login")
         data = {
             "username": "' OR '1'='1",
             "password": "any_password",
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
@@ -157,7 +150,6 @@ class LoginApiViewTests(APITestCase):
         """
         Test that account is locked after a certain number of failed login attempts
         """
-        url = reverse("login")
         data = {
             "username": self.username,
             "password": "wrongpassword",
@@ -165,7 +157,7 @@ class LoginApiViewTests(APITestCase):
 
         max_attempts = 5
         for _ in range(max_attempts):
-            response = self.client.post(url, data, format="json")
+            response = self.client.post(self.url, data, format="json")
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
             self.assertEqual(
                 response.data["message"], Message.INVALID_CREDENTIALS.value
@@ -173,7 +165,7 @@ class LoginApiViewTests(APITestCase):
 
         # Now, even with correct credentials, the account should be locked
         data["password"] = self.password
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data["message"], Message.ACCOUNT_LOCKED.value)
@@ -183,13 +175,12 @@ class LoginApiViewTests(APITestCase):
         """
         Test login attempt with a username that does not exist
         """
-        url = reverse("login")
         data = {
             "username": "nonexistentuser",
             "password": "any_password",
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data["message"], Message.INVALID_CREDENTIALS.value)
@@ -204,14 +195,50 @@ class LoginApiViewTests(APITestCase):
             username=special_username, password=self.password, role=UserModel.Role.USER
         )
 
-        url = reverse("login")
         data = {
             "username": special_username,
             "password": self.password,
         }
 
-        response = self.client.post(url, data, format="json")
+        response = self.client.post(self.url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], Message.LOGIN_SUCCESS.value)
         self.assertEqual(response.data["data"]["username"], special_username)
+
+
+class LogoutApiViewTests(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.url = reverse("logout")
+        cls.username = "testuser"
+        cls.password = "testpassword"
+        cls.user = UserModel.objects.create_user(
+            username=cls.username, password=cls.password
+        )
+
+    def setUp(self):
+        # Ensure the user is logged in at the start of each test
+        self.client.login(username=self.username, password=self.password)
+
+    def test_logout_authenticated_user(self):
+        """
+        Test logout with an authenticated user
+        """
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["message"], Message.LOGOUT_SUCCESS.value)
+        self.assertIsNone(response.data["data"])
+
+    def test_logout_unauthenticated_user(self):
+        """
+        Test logout attempt by an unauthenticated user
+        """
+        self.client.logout()
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data["message"], Message.FORBIDDEN.value)
+        self.assertIsNone(response.data.get("data"))
